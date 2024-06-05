@@ -34,14 +34,17 @@ namespace MyApi.Controllers.v1
             //HttpContext.RequestAborted =Output > CancellationToken
             var users = await _userRepository.TableNoTracking.ToListAsync(cancellationToken);
 
-            return new ApiResult<List<User>>
-            {
-                IsSuccess = true,
-                StatusCode = ApiResultStatusCode.Success,
-                Message = "عملیات با موفقیت انجام شد",
-                Data = users
+            return users;
+            /* remove after implicit operator apiResult
+             return new ApiResult<User>
+             {
+                 IsSuccess = true,
+                 StatusCode = ApiResultStatusCode.Success,
+                 Message = "عملیات با موفقیت انجام شد",
+                 Data = users
 
-            };
+             };*/
+           
 
 
         }
@@ -52,14 +55,19 @@ namespace MyApi.Controllers.v1
 
             var user = await _userRepository.GetByIdAsync(cancellationToken, id);
 
-            return new ApiResult<User>
-            {
-                IsSuccess = true,
-                StatusCode = ApiResultStatusCode.Success,
-                Message = "عملیات با موفقیت انجام شد",
-                Data = user
+            return user;
+            /* remove after implicit operator apiResult
+             return new ApiResult<User>
+             {
+                 IsSuccess = true,
+                 StatusCode = ApiResultStatusCode.Success,
+                 Message = "عملیات با موفقیت انجام شد",
+                 Data = user
 
-            };
+             };*/
+
+
+
         }
 
         [HttpPost]
@@ -73,6 +81,7 @@ namespace MyApi.Controllers.v1
                 StatusCode = ApiResultStatusCode.Success,
                 Message = "عملیات با موفقیت انجام شد",
             };
+
         }
 
         [HttpPut]

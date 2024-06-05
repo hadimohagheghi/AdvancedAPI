@@ -17,6 +17,22 @@ namespace WebFramework.Api
     public class ApiResult<TData> : ApiResult
     {
         public TData Data { get; set; }
+
+
+
+        #region Implicit Operators
+        public static implicit operator ApiResult<TData>(TData data)
+        {
+            return new ApiResult<TData>
+            {
+                IsSuccess = true,
+                StatusCode = ApiResultStatusCode.Success,
+                Message = "عملیات با موفقیت انجام شد",
+                Data = data
+            };
+        }
+
+        #endregion
     }
 
     public enum ApiResultStatusCode
@@ -36,4 +52,7 @@ namespace WebFramework.Api
         [Display(Name = "لیست خالی است")]
         ListEmpty = 4,
     }
+
+
+
 }
