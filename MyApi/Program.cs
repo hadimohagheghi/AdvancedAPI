@@ -1,5 +1,7 @@
 
 using Data;
+using Data.Repositories;
+using Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace MyApi
@@ -13,7 +15,15 @@ namespace MyApi
             // Add services to the container.
             builder.Services.AddDbContext<ApplicationDbContext>(options => 
                 options.UseSqlServer(builder.Configuration.GetConnectionString("SqlServer")));
-            
+
+            /*
+            builder.Services.AddScoped<IRepository<Category>, Repository<Category>>();
+            builder.Services.AddScoped<IRepository<User>, Repository<User>>();
+            builder.Services.AddScoped<IRepository<Post>, Repository<Post>>();
+            */
+            builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+            builder.Services.AddScoped<IUserRepository, UserRepository>();
+
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
