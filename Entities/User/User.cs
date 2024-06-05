@@ -16,6 +16,12 @@ namespace Entities
         {
             IsActive = true;
         }
+        [Required]
+        [StringLength(100)]
+        public string UserName { get; set; }
+        [Required]
+        [StringLength(500)]
+        public string PasswordHash { get; set; }
 
         [Required]
         [StringLength(100)]
@@ -25,16 +31,10 @@ namespace Entities
         public bool IsActive { get; set; }
         public DateTimeOffset? LastLoginDate { get; set; }
 
+
         public ICollection<Post> Posts { get; set; }
     }
 
-    /*public class UserConfiguration : IEntityTypeConfiguration<User>
-    {
-        public void Configure(EntityTypeBuilder<User> builder)
-        {
-            builder.Property(p => p.UserName).IsRequired().HasMaxLength(100);
-        }
-    }*/
 
     public enum GenderType
     {
