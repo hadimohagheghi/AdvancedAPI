@@ -44,8 +44,6 @@ namespace MyApi.Controllers.v1
                  Data = users
 
              };*/
-           
-
 
         }
 
@@ -75,12 +73,13 @@ namespace MyApi.Controllers.v1
         {
             await _userRepository.AddAsync(user, cancellationToken);
 
-            return new ApiResult
+            return new ApiResult(true, ApiResultStatusCode.Success);
+            /*return new ApiResult
             {
                 IsSuccess = true,
                 StatusCode = ApiResultStatusCode.Success,
                 Message = "عملیات با موفقیت انجام شد",
-            };
+            };*/
 
         }
 
@@ -99,12 +98,15 @@ namespace MyApi.Controllers.v1
 
             await _userRepository.UpdateAsync(updateUser, cancellationToken);
 
+            return new ApiResult(true, ApiResultStatusCode.Success);
+            /*
             return new ApiResult
             {
                 IsSuccess = true,
                 StatusCode = ApiResultStatusCode.Success,
                 Message = "عملیات با موفقیت انجام شد",
             };
+            */
         }
 
         [HttpDelete]
@@ -113,12 +115,13 @@ namespace MyApi.Controllers.v1
             var user = await _userRepository.GetByIdAsync(cancellationToken, id);
             await _userRepository.DeleteAsync(user, cancellationToken);
 
-            return new ApiResult
+            return new ApiResult(true, ApiResultStatusCode.Success);
+            /*return new ApiResult
             {
                 IsSuccess = true,
                 StatusCode = ApiResultStatusCode.Success,
                 Message = "عملیات با موفقیت انجام شد",
-            };
+            };*/
         }
 
     }
