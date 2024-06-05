@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using WebFramework.Api;
 
 
 namespace MyApi.Controllers.v1
@@ -19,8 +20,8 @@ namespace MyApi.Controllers.v1
     public class UsersController : ControllerBase
     {
         private readonly IUserRepository _userRepository;
-        
-        
+
+
 
         public UsersController(IUserRepository userRepository)
         {
@@ -28,30 +29,54 @@ namespace MyApi.Controllers.v1
         }
 
         [HttpGet]
-        public  async Task<List<User>> Get(CancellationToken cancellationToken)
+        public async Task<ApiResult<List<User>>> Get(CancellationToken cancellationToken)
         {
             //HttpContext.RequestAborted =Output > CancellationToken
             var users = await _userRepository.TableNoTracking.ToListAsync(cancellationToken);
-            return users;
+
+            return new ApiResult<List<User>>
+            {
+                IsSuccess = true,
+                StatusCode = ApiResultStatusCode.Success,
+                Message = "عملیات با موفقیت انجام شد",
+                Data = users
+
+            };
+
+
         }
 
         [HttpGet("{id:int}")]
-        public  async Task<ActionResult<User>> Get(int id, CancellationToken cancellationToken)
+        public async Task<ApiResult<User>> Get(int id, CancellationToken cancellationToken)
         {
-           
+
             var user = await _userRepository.GetByIdAsync(cancellationToken, id);
-            
-            return user;
+
+            return new ApiResult<User>
+            {
+                IsSuccess = true,
+                StatusCode = ApiResultStatusCode.Success,
+                Message = "عملیات با موفقیت انجام شد",
+                Data = user
+
+            };
         }
 
         [HttpPost]
-        public  async Task Create(User user, CancellationToken cancellationToken)
+        public async Task<ApiResult> Create(User user, CancellationToken cancellationToken)
         {
             await _userRepository.AddAsync(user, cancellationToken);
+
+            return new ApiResult
+            {
+                IsSuccess = true,
+                StatusCode = ApiResultStatusCode.Success,
+                Message = "عملیات با موفقیت انجام شد",
+            };
         }
 
         [HttpPut]
-        public  async Task<IActionResult> Update(int id, User user, CancellationToken cancellationToken)
+        public async Task<ApiResult> Update(int id, User user, CancellationToken cancellationToken)
         {
             var updateUser = await _userRepository.GetByIdAsync(cancellationToken, id);
 
@@ -65,16 +90,26 @@ namespace MyApi.Controllers.v1
 
             await _userRepository.UpdateAsync(updateUser, cancellationToken);
 
-            return Ok();
+            return new ApiResult
+            {
+                IsSuccess = true,
+                StatusCode = ApiResultStatusCode.Success,
+                Message = "عملیات با موفقیت انجام شد",
+            };
         }
 
         [HttpDelete]
-        public  async Task<ActionResult> Delete(int id, CancellationToken cancellationToken)
+        public async Task<ApiResult> Delete(int id, CancellationToken cancellationToken)
         {
             var user = await _userRepository.GetByIdAsync(cancellationToken, id);
             await _userRepository.DeleteAsync(user, cancellationToken);
 
-            return Ok();
+            return new ApiResult
+            {
+                IsSuccess = true,
+                StatusCode = ApiResultStatusCode.Success,
+                Message = "عملیات با موفقیت انجام شد",
+            };
         }
 
     }
