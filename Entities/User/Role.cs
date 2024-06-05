@@ -13,6 +13,10 @@ namespace Entities
     public class Role : BaseEntity //: IdentityRole<int>, IEntity
     {
         [Required]
+        [StringLength(50)]
+        public string Name { get; set; }
+
+        [Required]
         [StringLength(100)]
         public string Description { get; set; }
     }
