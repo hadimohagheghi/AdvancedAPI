@@ -16,7 +16,10 @@ namespace WebFramework.Api
         public ApiResultStatusCode StatusCode { get; set; }
         public string Message { get; set; }
 
-
+        public ApiResult()
+        {
+            
+        }
         public ApiResult(bool isSuccess, ApiResultStatusCode statusCode, string message=null)
         {
             IsSuccess = isSuccess;
@@ -68,25 +71,30 @@ namespace WebFramework.Api
         #region Implicit Operators
         public static implicit operator ApiResult<TData>(TData data)
         {
-           return new ApiResult<TData>(true, ApiResultStatusCode.Success, data);
-            /* return new ApiResult<TData>
+           //return new ApiResult<TData>(true, ApiResultStatusCode.Success, data);
+             return new ApiResult<TData>
              {
                  IsSuccess = true,
                  StatusCode = ApiResultStatusCode.Success,
+                 Message = "عملیات با موفقیت انجام شد",
                  Data = data
              };
-            */
+            
         }
-        
 
-
+        public static implicit operator ApiResult<TData>(NotFoundResult data)
+        {
+            return new ApiResult<TData>
+            {
+                IsSuccess = true,
+                StatusCode = ApiResultStatusCode.Success,
+                Message = "یافت نشد"
+            };
+        }
 
         #endregion
 
-        public ApiResult(bool isSuccess, ApiResultStatusCode statusCode, TData data,string message = null) : base(isSuccess, statusCode, message)
-        {
-            Data = data;
-        }
+
     }
 
     public enum ApiResultStatusCode

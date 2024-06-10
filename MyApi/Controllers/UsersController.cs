@@ -53,6 +53,11 @@ namespace MyApi.Controllers.v1
 
             var user = await _userRepository.GetByIdAsync(cancellationToken, id);
 
+
+            if (user == null)
+            {
+               //return NotFound();
+            }
             return user;
             /* remove after implicit operator apiResult
              return new ApiResult<User>
