@@ -56,7 +56,7 @@ namespace MyApi.Controllers.v1
 
             if (user == null)
             {
-                //return NotFound();
+                return NotFound();
             }
             return user;
             /* remove after implicit operator apiResult
@@ -74,16 +74,19 @@ namespace MyApi.Controllers.v1
         }
 
         [HttpPost]
-        public async Task<ApiResult> Create(User user, CancellationToken cancellationToken)
+        public async Task<ApiResult<User>> Create(User user, CancellationToken cancellationToken)
         {
-            await _userRepository.AddAsync(user, cancellationToken);
+             await _userRepository.AddAsync(user, cancellationToken);
+             
 
             /*if (!ModelState.IsValid)
             {
                 return BadRequest();
             }*/
             //Use ctor
-            return new ApiResult(true, ApiResultStatusCode.Success); //or return new ApiResult(true, ApiResultStatusCode.Success,"عملیات با موفقیت انجام شد");
+
+            return Ok(user);
+            //return new ApiResult(true, ApiResultStatusCode.Success); //or return new ApiResult(true, ApiResultStatusCode.Success,"عملیات با موفقیت انجام شد");
             /*return new ApiResult
             {
                 IsSuccess = true,
@@ -108,7 +111,8 @@ namespace MyApi.Controllers.v1
 
             await _userRepository.UpdateAsync(updateUser, cancellationToken);
 
-            return new ApiResult(true, ApiResultStatusCode.Success);
+            return Ok();
+            //return new ApiResult(true, ApiResultStatusCode.Success);
             /*
             return new ApiResult
             {
@@ -125,7 +129,8 @@ namespace MyApi.Controllers.v1
             var user = await _userRepository.GetByIdAsync(cancellationToken, id);
             await _userRepository.DeleteAsync(user, cancellationToken);
 
-            return new ApiResult(true, ApiResultStatusCode.Success);
+            return Ok();
+            //return new ApiResult(true, ApiResultStatusCode.Success);
             /*return new ApiResult
             {
                 IsSuccess = true,

@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Common.Utilities;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 
 namespace WebFramework.Api
@@ -16,10 +17,10 @@ namespace WebFramework.Api
         public ApiResultStatusCode StatusCode { get; set; }
         public string Message { get; set; }
 
-        public ApiResult()
+        /*public ApiResult()
         {
             
-        }
+        }*/
         //برای اینکه به صورت دستی آبجکت رو نسازیم و مقداردهی نکنیم
         public ApiResult(bool isSuccess, ApiResultStatusCode statusCode, string message=null)
         {
@@ -64,14 +65,18 @@ namespace WebFramework.Api
         #endregion
     }
 
-    public class ApiResult<TData> : ApiResult
+    public class ApiResult<TData> : ApiResult 
+        where TData :class
+    
     {
         public TData Data { get; set; }
+        public ApiResult(bool isSuccess, ApiResultStatusCode statusCode,TData data, string message = null) : base(isSuccess, statusCode, message)
+        {
+            Data = data;
+        }
 
-
-
-        #region Implicit Operators
-        public static implicit operator ApiResult<TData>(TData data)
+        #region Old Implicit Operators
+        /*public static implicit operator ApiResult<TData>(TData data)
         {
            //return new ApiResult<TData>(true, ApiResultStatusCode.Success, data);
              return new ApiResult<TData>
@@ -92,9 +97,56 @@ namespace WebFramework.Api
                 StatusCode = ApiResultStatusCode.Success,
                 Message = "یافت نشد"
             };
+        }*/
+        #endregion
+        #region Implicit Operators
+        public static implicit operator ApiResult<TData>(TData data)
+        {
+            return new ApiResult<TData>(true, ApiResultStatusCode.Success, data);
         }
 
+        public static implicit operator ApiResult<TData>(OkResult result)
+        {
+            return new ApiResult<TData>(true, ApiResultStatusCode.Success, null);
+        }
+
+        public static implicit operator ApiResult<TData>(OkObjectResult result)
+        {
+            return new ApiResult<TData>(true, ApiResultStatusCode.Success, (TData)result.Value);
+        }
+
+        public static implicit operator ApiResult<TData>(BadRequestResult result)
+        {
+            return new ApiResult<TData>(false, ApiResultStatusCode.BadRequest, null);
+        }
+
+        public static implicit operator ApiResult<TData>(BadRequestObjectResult result)
+        {
+            var message = result.Value?.ToString();
+            if (result.Value is SerializableError errors)
+            {
+                var errorMessages = errors.SelectMany(p => (string[])p.Value).Distinct();
+                message = string.Join(" | ", errorMessages);
+            }
+            return new ApiResult<TData>(false, ApiResultStatusCode.BadRequest, null, message);
+        }
+
+        public static implicit operator ApiResult<TData>(ContentResult result)
+        {
+            return new ApiResult<TData>(true, ApiResultStatusCode.Success, null, result.Content);
+        }
+
+        public static implicit operator ApiResult<TData>(NotFoundResult result)
+        {
+            return new ApiResult<TData>(false, ApiResultStatusCode.NotFound, null);
+        }
+
+        public static implicit operator ApiResult<TData>(NotFoundObjectResult result)
+        {
+            return new ApiResult<TData>(false, ApiResultStatusCode.NotFound, (TData)result.Value);
+        }
         #endregion
+       
 
 
     }
