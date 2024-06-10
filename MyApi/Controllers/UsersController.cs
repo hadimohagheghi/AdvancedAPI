@@ -10,11 +10,12 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using WebFramework.Api;
+using WebFramework.Filters;
 
 
 namespace MyApi.Controllers.v1
 {
-
+    
     [Route("api/[controller]")]
     [ApiController]
     public class UsersController : ControllerBase
@@ -27,10 +28,10 @@ namespace MyApi.Controllers.v1
         {
             _userRepository = userRepository;
         }
-
+        [ApiResultFilter]
         [HttpGet]
-        public async Task<ApiResult<List<User>>> Get(CancellationToken cancellationToken)
-        {
+        public async Task<List<User>> Get(CancellationToken cancellationToken)
+        { 
             //HttpContext.RequestAborted =Output > CancellationToken
             var users = await _userRepository.TableNoTracking.ToListAsync(cancellationToken);
 
@@ -44,7 +45,7 @@ namespace MyApi.Controllers.v1
                  Data = users
 
              };*/
-
+            
         }
 
         [HttpGet("{id:int}")]
