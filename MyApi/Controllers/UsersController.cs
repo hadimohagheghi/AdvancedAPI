@@ -56,7 +56,7 @@ namespace MyApi.Controllers.v1
 
             if (user == null)
             {
-               //return NotFound();
+                //return NotFound();
             }
             return user;
             /* remove after implicit operator apiResult
@@ -78,7 +78,12 @@ namespace MyApi.Controllers.v1
         {
             await _userRepository.AddAsync(user, cancellationToken);
 
-            return new ApiResult(true, ApiResultStatusCode.Success);
+            /*if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }*/
+            //Use ctor
+            return new ApiResult(true, ApiResultStatusCode.Success); //or return new ApiResult(true, ApiResultStatusCode.Success,"عملیات با موفقیت انجام شد");
             /*return new ApiResult
             {
                 IsSuccess = true,

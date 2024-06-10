@@ -20,8 +20,10 @@ namespace WebFramework.Api
         {
             
         }
+        //برای اینکه به صورت دستی آبجکت رو نسازیم و مقداردهی نکنیم
         public ApiResult(bool isSuccess, ApiResultStatusCode statusCode, string message=null)
         {
+
             IsSuccess = isSuccess;
             StatusCode = statusCode;
             Message = message??statusCode.ToDisplay(DisplayProperty.Name);
