@@ -18,7 +18,8 @@ namespace MyApi.Controllers.v1
 {
     
     [Route("api/[controller]")]
-    [ApiController]
+    [ApiResultFilter]
+    [ApiController]  //Default from Body  - Check ModelState -> BadRequest
     public class UsersController : ControllerBase
     {
         private readonly IUserRepository _userRepository;
@@ -29,7 +30,7 @@ namespace MyApi.Controllers.v1
         {
             _userRepository = userRepository;
         }
-        [ApiResultFilter]
+        
         [HttpGet]
         public async Task<List<User>> Get(CancellationToken cancellationToken)
         { 
