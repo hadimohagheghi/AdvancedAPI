@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using MyApi.Models;
 using WebFramework.Api;
 using WebFramework.Filters;
 
@@ -75,10 +76,19 @@ namespace MyApi.Controllers.v1
         }
 
         [HttpPost]
-        public async Task<ApiResult<User>> Create(User user, CancellationToken cancellationToken)
+        public async Task<ApiResult<User>> Create(UserDto userDto, CancellationToken cancellationToken)
         {
-             await _userRepository.AddAsync(user, cancellationToken);
-             
+
+            var user = new User
+            {
+             Age   = userDto.Age,
+             FullName = userDto.FullName,
+             Gender = userDto.Gender,
+             UserName = userDto.UserName
+            };
+            await _userRepository.AddAsync(user,userDto.Password, cancellationToken);
+            // await _userRepository.AddAsync(user, cancellationToken);
+
 
             /*if (!ModelState.IsValid)
             {
