@@ -10,11 +10,12 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using WebFramework.Api;
+using WebFramework.Filters;
 
 
 namespace MyApi.Controllers.v1
 {
-
+    
     [Route("api/[controller]")]
     [ApiController]
     public class UsersController : ControllerBase
@@ -27,10 +28,10 @@ namespace MyApi.Controllers.v1
         {
             _userRepository = userRepository;
         }
-
+        [ApiResultFilter]
         [HttpGet]
-        public async Task<ApiResult<List<User>>> Get(CancellationToken cancellationToken)
-        {
+        public async Task<List<User>> Get(CancellationToken cancellationToken)
+        { 
             //HttpContext.RequestAborted =Output > CancellationToken
             var users = await _userRepository.TableNoTracking.ToListAsync(cancellationToken);
 
@@ -44,7 +45,7 @@ namespace MyApi.Controllers.v1
                  Data = users
 
              };*/
-
+            
         }
 
         [HttpGet("{id:int}")]
@@ -53,6 +54,11 @@ namespace MyApi.Controllers.v1
 
             var user = await _userRepository.GetByIdAsync(cancellationToken, id);
 
+
+            if (user == null)
+            {
+                return NotFound();
+            }
             return user;
             /* remove after implicit operator apiResult
              return new ApiResult<User>
@@ -69,11 +75,19 @@ namespace MyApi.Controllers.v1
         }
 
         [HttpPost]
-        public async Task<ApiResult> Create(User user, CancellationToken cancellationToken)
+        public async Task<ApiResult<User>> Create(User user, CancellationToken cancellationToken)
         {
-            await _userRepository.AddAsync(user, cancellationToken);
+             await _userRepository.AddAsync(user, cancellationToken);
+             
 
-            return new ApiResult(true, ApiResultStatusCode.Success);
+            /*if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }*/
+            //Use ctor
+
+            return Ok(user);
+            //return new ApiResult(true, ApiResultStatusCode.Success); //or return new ApiResult(true, ApiResultStatusCode.Success,"عملیات با موفقیت انجام شد");
             /*return new ApiResult
             {
                 IsSuccess = true,
@@ -98,7 +112,8 @@ namespace MyApi.Controllers.v1
 
             await _userRepository.UpdateAsync(updateUser, cancellationToken);
 
-            return new ApiResult(true, ApiResultStatusCode.Success);
+            return Ok();
+            //return new ApiResult(true, ApiResultStatusCode.Success);
             /*
             return new ApiResult
             {
@@ -115,7 +130,8 @@ namespace MyApi.Controllers.v1
             var user = await _userRepository.GetByIdAsync(cancellationToken, id);
             await _userRepository.DeleteAsync(user, cancellationToken);
 
-            return new ApiResult(true, ApiResultStatusCode.Success);
+            return Ok();
+            //return new ApiResult(true, ApiResultStatusCode.Success);
             /*return new ApiResult
             {
                 IsSuccess = true,
