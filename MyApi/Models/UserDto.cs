@@ -30,8 +30,10 @@ namespace MyApi.Models
             if (UserName.Equals("test", StringComparison.OrdinalIgnoreCase))
                 //list.Add(new ValidationResult("نام کاربری نمیتواند Test باشد", new[] { nameof(UserName) }));
                 yield return new ValidationResult("نام کاربری نمیتواند Test باشد", new[] { nameof(UserName) });
-
-
+            if (Password.Equals("123456"))
+                yield return new ValidationResult("رمز عبور نمیتواند 123456 باشد", new[] { nameof(Password) });
+            if (Gender == GenderType.Male && Age > 30)
+                yield return new ValidationResult("آقایان بیشتر از 30 سال معتبر نیستند", new[] { nameof(Gender), nameof(Age) });
             //return list;
         }
     }
