@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace MyApi.Models
 {
-    public class UserDto
+    public class UserDto : IValidatableObject
     {
         [Required]
         [StringLength(100)]
@@ -24,5 +24,15 @@ namespace MyApi.Models
         public int Age { get; set; }
 
         public GenderType Gender { get; set; }
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+        {
+            //var list=new List<ValidationResult>();
+            if (UserName.Equals("test", StringComparison.OrdinalIgnoreCase))
+                //list.Add(new ValidationResult("نام کاربری نمیتواند Test باشد", new[] { nameof(UserName) }));
+                yield return new ValidationResult("نام کاربری نمیتواند Test باشد", new[] { nameof(UserName) });
+
+
+            //return list;
+        }
     }
 }
