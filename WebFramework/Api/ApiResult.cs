@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Common;
 using Common.Utilities;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-
+using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace WebFramework.Api
 {
@@ -15,21 +11,16 @@ namespace WebFramework.Api
     {
         public bool IsSuccess { get; set; }
         public ApiResultStatusCode StatusCode { get; set; }
+
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public string Message { get; set; }
 
-        /*public ApiResult()
+        public ApiResult(bool isSuccess, ApiResultStatusCode statusCode, string message = null)
         {
-            
-        }*/
-        //برای اینکه به صورت دستی آبجکت رو نسازیم و مقداردهی نکنیم
-        public ApiResult(bool isSuccess, ApiResultStatusCode statusCode, string message=null)
-        {
-
             IsSuccess = isSuccess;
             StatusCode = statusCode;
-            Message = message??statusCode.ToDisplay(DisplayProperty.Name);
+            Message = message ?? statusCode.ToDisplay();
         }
-
 
         #region Implicit Operators
         public static implicit operator ApiResult(OkResult result)
@@ -44,7 +35,7 @@ namespace WebFramework.Api
 
         public static implicit operator ApiResult(BadRequestObjectResult result)
         {
-            var message = result.Value?.ToString();
+            var message = result.Value.ToString();
             if (result.Value is SerializableError errors)
             {
                 var errorMessages = errors.SelectMany(p => (string[])p.Value).Distinct();
@@ -65,40 +56,18 @@ namespace WebFramework.Api
         #endregion
     }
 
-    public class ApiResult<TData> : ApiResult 
-        where TData :class
-    
+    public class ApiResult<TData> : ApiResult
+        where TData : class
     {
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public TData Data { get; set; }
-        public ApiResult(bool isSuccess, ApiResultStatusCode statusCode,TData data, string message = null) : base(isSuccess, statusCode, message)
+
+        public ApiResult(bool isSuccess, ApiResultStatusCode statusCode, TData data, string message = null)
+            : base(isSuccess, statusCode, message)
         {
             Data = data;
         }
 
-        #region Old Implicit Operators
-        /*public static implicit operator ApiResult<TData>(TData data)
-        {
-           //return new ApiResult<TData>(true, ApiResultStatusCode.Success, data);
-             return new ApiResult<TData>
-             {
-                 IsSuccess = true,
-                 StatusCode = ApiResultStatusCode.Success,
-                 Message = "عملیات با موفقیت انجام شد",
-                 Data = data
-             };
-            
-        }
-
-        public static implicit operator ApiResult<TData>(NotFoundResult data)
-        {
-            return new ApiResult<TData>
-            {
-                IsSuccess = true,
-                StatusCode = ApiResultStatusCode.Success,
-                Message = "یافت نشد"
-            };
-        }*/
-        #endregion
         #region Implicit Operators
         public static implicit operator ApiResult<TData>(TData data)
         {
@@ -122,7 +91,7 @@ namespace WebFramework.Api
 
         public static implicit operator ApiResult<TData>(BadRequestObjectResult result)
         {
-            var message = result.Value?.ToString();
+            var message = result.Value.ToString();
             if (result.Value is SerializableError errors)
             {
                 var errorMessages = errors.SelectMany(p => (string[])p.Value).Distinct();
@@ -146,29 +115,5 @@ namespace WebFramework.Api
             return new ApiResult<TData>(false, ApiResultStatusCode.NotFound, (TData)result.Value);
         }
         #endregion
-       
-
-
     }
-
-    public enum ApiResultStatusCode
-    {
-        [Display(Name = "عملیات با موفقیت انجام شد")]
-        Success = 0,
-
-        [Display(Name = "خطایی در سرور رخ داده است")]
-        ServerError = 1,
-
-        [Display(Name = "پارامتر های ارسالی معتبر نیستند")]
-        BadRequest = 2,
-
-        [Display(Name = "یافت نشد")]
-        NotFound = 3,
-
-        [Display(Name = "لیست خالی است")]
-        ListEmpty = 4,
-    }
-
-
-
 }

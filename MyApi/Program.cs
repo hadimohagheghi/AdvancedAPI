@@ -1,8 +1,10 @@
 
+using Autofac.Core;
 using Data;
 using Data.Repositories;
 using Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace MyApi
 {
@@ -13,8 +15,10 @@ namespace MyApi
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-            builder.Services.AddDbContext<ApplicationDbContext>(options => 
-                options.UseSqlServer(builder.Configuration.GetConnectionString("SqlServer")));
+            builder.Services.AddDbContext<ApplicationDbContext>(options =>
+            {
+                options.UseSqlServer(builder.Configuration.GetConnectionString("SqlServer"));
+            });
 
             /*
             builder.Services.AddScoped<IRepository<Category>, Repository<Category>>();

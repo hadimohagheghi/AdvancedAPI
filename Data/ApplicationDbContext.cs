@@ -1,12 +1,14 @@
-﻿using System.Reflection;
-using Common.Utilities;
+﻿using Common.Utilities;
 using Entities;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
+using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Data
 {
     public class ApplicationDbContext : DbContext
-       
     {
         public ApplicationDbContext(DbContextOptions options)
             : base(options)
