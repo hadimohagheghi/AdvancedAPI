@@ -1,6 +1,6 @@
 ﻿using Common;
+using Common.Exceptions;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using WebFramework.Api;
@@ -23,6 +23,10 @@ namespace WebFramework.Middlewares
             try
             {
                 await _next(context);
+            }
+            catch (AppException ex)
+            {
+                _logger.LogError(ex, ex.Message);
             }
             catch (Exception e)
             {

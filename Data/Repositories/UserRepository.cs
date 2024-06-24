@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Common.Exceptions;
 
 namespace Data.Repositories
 {
@@ -25,13 +26,22 @@ namespace Data.Repositories
 
         public async Task AddAsync(User user, string password, CancellationToken cancellationToken)
         {
-            var exists = await TableNoTracking.AnyAsync(p => p.UserName == user.UserName);
-            if (exists)
-                throw new Exception("نام کاربری تکراری است");
+            //var exists = await TableNoTracking.AnyAsync(p => p.UserName == user.UserName);
+            //if (exists)
+            //    throw new Exception("نام کاربری تکراری است");
+            await IsExist(user,cancellationToken);
 
             var passwordHash = SecurityHelper.GetSha256Hash(password);
             user.PasswordHash = passwordHash;
             await base.AddAsync(user, cancellationToken);
         }
+
+        private async Task<bool> IsExist(User user, CancellationToken cancellationToken)
+        {
+            var exists = await TableNoTracking.AnyAsync(p => p.UserName == user.UserName);
+            if (exists)
+                throw new BadRequestException("نام کاربری تکراری است");
+        }
+
     }
 }

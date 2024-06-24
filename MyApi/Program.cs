@@ -5,6 +5,7 @@ using Data.Repositories;
 using Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using WebFramework.Middlewares;
 
 namespace MyApi
 {
@@ -37,6 +38,9 @@ namespace MyApi
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
+            app.UseMiddleware<CustomExceptionHandlerMiddleware>();
+
+
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
