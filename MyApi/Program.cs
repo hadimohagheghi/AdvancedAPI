@@ -38,7 +38,8 @@ namespace MyApi
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
-            app.UseMiddleware<CustomExceptionHandlerMiddleware>();
+            //app.UseMiddleware<CustomExceptionHandlerMiddleware>();
+            app.UseCustomExceptionHandler();
 
 
             if (app.Environment.IsDevelopment())
