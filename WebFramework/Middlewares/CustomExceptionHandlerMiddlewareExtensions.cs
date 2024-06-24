@@ -44,6 +44,9 @@ namespace WebFramework.Middlewares
                 var apiResult = new ApiResult(false,ApiResultStatusCode.ServerError);
                 var json = JsonConvert.SerializeObject(apiResult);
 
+
+                context.Response.ContentType="application/json";
+
                 await context.Response.WriteAsync(json);
             }
         }
