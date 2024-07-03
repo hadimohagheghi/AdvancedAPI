@@ -4,7 +4,6 @@ using System.Linq;
 
 namespace Common.Utilities
 {
-    //اعتبار سنجی پارامترهای ورودی متدها
     public static class Assert
     {
         public static void NotNull<T>(T obj, string name, string message = null)
